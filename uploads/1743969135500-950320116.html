@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integration between Aggrigo and Fortnox</title>
+    <meta name="description" content="Aggrigo simplifies order management by seamlessly connecting with Fortnox. Fetch and view your orders with ease.">
+    <style>
+        :root {
+            --primary: #4CAF50;
+            --secondary: #2E7D32;
+            --dark: #333333;
+            --light: #f5f5f5;
+            --gray: #757575;
+            --white: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            color: var(--dark);
+            background-color: var(--light);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 30px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            transition: color 0.3s;
+            font-weight: 500;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .cta-button {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .cta-button:hover {
+            background-color: var(--secondary);
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        
+        .hero p {
+            font-size: 20px;
+            max-width: 800px;
+            margin: 0 auto 40px;
+            color: var(--gray);
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background-color: var(--white);
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .section-title h2 {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .section-title p {
+            font-size: 18px;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .feature-card {
+            background-color: var(--light);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            background-color: rgba(76, 175, 80, 0.1);
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .feature-icon img {
+            width: 35px;
+            height: 35px;
+        }
+        
+        .feature-card h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+        }
+        
+        .feature-card p {
+            color: var(--gray);
+        }
+        
+        /* How It Works Section */
+        .how-it-works {
+            padding: 80px 0;
+            background-color: var(--light);
+        }
+        
+        .flow-chart {
+            margin: 50px auto;
+            max-width: 900px;
+            background-color: var(--white);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .flow-chart img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .steps {
+            margin-top: 50px;
+            counter-reset: step-counter;
+        }
+        
+        .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .step-number {
+            background-color: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-right: 20px;
+        }
+        
+        .step-content {
+            background-color: var(--white);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            flex-grow: 1;
+        }
+        
+        .step-content h3 {
+            margin-bottom: 10px;
+        }
+        
+        /* Testimonials Section */
+        .testimonials {
+            padding: 80px 0;
+            background-color: var(--white);
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .testimonial-card {
+            background-color: var(--light);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--gray);
+        }
+        
+        .author-info h4 {
+            margin-bottom: 5px;
+        }
+        
+        .author-info p {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        /* Target Users Section */
+        .target-users {
+            padding: 80px 0;
+            background-color: var(--light);
+        }
+        
+        .industry-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .industry-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .industry-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .industry-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 20px;
+        }
+        
+        .industry-card h3 {
+            margin-bottom: 15px;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 0;
+            background-color: var(--primary);
+            color: var(--white);
+            text-align: center;
+        }
+        
+        .cta-section h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        
+        .cta-section p {
+            max-width: 700px;
+            margin: 0 auto 40px;
+            font-size: 18px;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .secondary-cta {
+            background-color: var(--white);
+            color: var(--primary);
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .secondary-cta:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: var(--white);
+            padding: 60px 0 30px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column h3 {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-links a {
+            color: #b0b0b0;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--white);
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s;
+        }
+        
+        .social-icon:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #757575;
+            font-size: 14px;
+        }
+        
+        .partner-logos {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        
+        .partner-logo {
+            height: 40px;
+        }
+        
+        .fortnox-boilerplate {
+            background-color: #f2f2f2;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 30px;
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 32px;
+            }
+            
+            .hero p {
+                font-size: 18px;
+            }
+            
+            .section-title h2 {
+                font-size: 28px;
+            }
+            
+            .cta-section h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">Aggrigo</div>
+                <ul class="nav-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="#testimonials">Testimonials</a></li>
+                    <li><a href="#target-users">Who It's For</a></li>
+                    <li><a href="#" class="cta-button">Get Started</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Simplify Order Management with Aggrigo & Fortnox</h1>
+            <p>Easily fetch and view all your orders from Fortnox in one intuitive platform. Save time, reduce errors, and get a clearer overview of your business.</p>
+            <a href="#" class="cta-button">Start Your Free Trial</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Choose Aggrigo?</h2>
+                <p>Our integration with Fortnox unlocks new possibilities for streamlining your order management process</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="/api/placeholder/70/70" alt="Time-saving icon">
+                    </div>
+                    <h3>Save Valuable Time</h3>
+                    <p>Eliminate manual data entry and reduce the time spent on order management by up to 75%.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="/api/placeholder/70/70" alt="Real-time icon">
+                    </div>
+                    <h3>Real-Time Order Tracking</h3>
+                    <p>Get instant visibility into all your orders from Fortnox, updated in real-time.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="/api/placeholder/70/70" alt="Error reduction icon">
+                    </div>
+                    <h3>Reduce Errors</h3>
+                    <p>Automated synchronization eliminates manual errors in order processing and fulfillment.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="/api/placeholder/70/70" alt="Dashboard icon">
+                    </div>
+                    <h3>Unified Dashboard</h3>
+                    <p>View and manage all your Fortnox orders through a single, intuitive interface.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="/api/placeholder/70/70" alt="Analytics icon">
+                    </div>
+                    <h3>Advanced Analytics</h3>
+                    <p>Gain valuable insights into your order trends, customer behavior, and business performance.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <img src="/api/placeholder/70/70" alt="Customer satisfaction icon">
+                    </div>
+                    <h3>Enhanced Customer Satisfaction</h3>
+                    <p>Provide faster, more accurate order processing to keep your customers happy and loyal.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-title">
+                <h2>How The Integration Works</h2>
+                <p>Connecting Aggrigo with your Fortnox account is simple and secure</p>
+            </div>
+            <div class="flow-chart">
+                <img src="/api/placeholder/900/300" alt="Flow chart showing how Aggrigo integrates with Fortnox">
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Connect Your Accounts</h3>
+                        <p>Authorize Aggrigo to access your Fortnox data with our secure, one-click authorization process.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Synchronize Your Orders</h3>
+                        <p>Aggrigo automatically pulls all your order data from Fortnox and organizes it in our platform.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>View & Manage Orders</h3>
+                        <p>Access all your order information through our intuitive dashboard, with powerful filtering and sorting capabilities.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Get Actionable Insights</h3>
+                        <p>Use our analytics tools to identify trends, optimize your inventory, and make data-driven business decisions.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h2>What Our Customers Say</h2>
+                <p>See how Aggrigo is helping businesses streamline their order management with Fortnox</p>
+            </div>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"Since integrating Aggrigo with our Fortnox system, we've cut our order processing time in half. The real-time visibility into our orders has been a game-changer for our growing e-commerce business."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SM</div>
+                        <div class="author-info">
+                            <h4>Sarah Magnusson</h4>
+                            <p>E-commerce Manager, Nordic Designs</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"As a small retail business, we needed a simple solution to keep track of our orders. Aggrigo's integration with Fortnox gave us exactly what we needed without any complexity. Highly recommended!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JL</div>
+                        <div class="author-info">
+                            <h4>Johan Lindberg</h4>
+                            <p>Owner, Lindberg's Retail</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"The analytics features in Aggrigo have helped us identify our best-selling products and optimize our inventory. The seamless connection with Fortnox means we're always working with accurate, up-to-date information."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">MA</div>
+                        <div class="author-info">
+                            <h4>Maria Andersson</h4>
+                            <p>Operations Director, Stockholm Foods</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Target Users Section -->
+    <section class="target-users" id="target-users">
+        <div class="container">
+            <div class="section-title">
+                <h2>Who Benefits Most from Aggrigo?</h2>
+                <p>Our Fortnox integration is especially valuable for these business types</p>
+            </div>
+            <div class="industry-cards">
+                <div class="industry-card">
+                    <img src="/api/placeholder/60/60" alt="E-commerce icon" class="industry-icon">
+                    <h3>E-commerce Businesses</h3>
+                    <p>Handle high order volumes efficiently and keep track of all your online sales in one place.</p>
+                </div>
+                <div class="industry-card">
+                    <img src="/api/placeholder/60/60" alt="Retail icon" class="industry-icon">
+                    <h3>Retail Stores</h3>
+                    <p>Synchronize in-store and online orders, manage inventory efficiently, and improve customer service.</p>
+                </div>
+                <div class="industry-card">
+                    <img src="/api/placeholder/60/60" alt="Wholesale icon" class="industry-icon">
+                    <h3>Wholesale Distributors</h3>
+                    <p>Track large B2B orders, manage recurring orders, and optimize your fulfillment processes.</p>
+                </div>
+                <div class="industry-card">
+                    <img src="/api/placeholder/60/60" alt="Service icon" class="industry-icon">
+                    <h3>Service Providers</h3>
+                    <p>Keep track of service orders, organize client information, and streamline your billing process.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Streamline Your Order Management?</h2>
+            <p>Start your 14-day free trial today and experience the benefits of connecting Aggrigo with your Fortnox account.</p>
+            <div class="cta-buttons">
+                <a href="#" class="secondary-cta">Schedule a Demo</a>
+                <a href="#" class="cta-button">Start Free Trial</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Aggrigo</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">API</a></li>
+                        <li><a href="#">Support</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Legal</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">GDPR Compliance</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Connect With Us</h3>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon">
+                            <img src="/api/placeholder/20/20" alt="Facebook icon">
+                        </a>
+                        <a href="#" class="social-icon">
+                            <img src="/api/placeholder/20/20" alt="Twitter icon">
+                        </a>
+                        <a href="#" class="social-icon">
+                            <img src="/api/placeholder/20/20" alt="LinkedIn icon">
+                        </a>
+                    </div>
+                    <div class="partner-logos">
+                        <img src="/api/placeholder/120/40" alt="Aggrigo logo" class="partner-logo">
+                        <img src="/api/placeholder/120/40" alt="Fortnox logo" class="partner-logo">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="fortnox-boilerplate">
+                <p>About Fortnox:</p>
+                <p>Fortnox är en företagsplattform med produkter inom bland annat redovisning, fakturering, finansiering och medarbetare. Kunderna får också tillgång till andra företagstjänster och till hundratals externa system genom partnersamarbeten.</p>
+                <p>Fortnox grundades 2001 med huvudkontor i Växjö. Aktien är noterad på Nasdaq Stockholms huvudlista.</p>
+                <p>För ytterligare information se <a href="https://www.fortnox.se?utm_source=aggrigo&utm_medium=link&utm_campaign=fortnox-hos-integrator">www.fortnox.se</a>.</p>
+            </div>
+            
+            <div class="copyright">
+                <p>&copy; 2025 Aggrigo. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
